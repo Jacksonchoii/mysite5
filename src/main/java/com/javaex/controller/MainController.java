@@ -5,12 +5,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller
-@RequestMapping(value= "/hello")
-public class Hello {
+public class MainController {
 
-	@RequestMapping(value="/test", method={RequestMethod.GET, RequestMethod.POST})
-	public String hello() {
-		System.out.println("/hellospring/hello");
-		return "hello";
+	@RequestMapping(value = "/", method = RequestMethod.GET)
+	public String main() {
+		System.out.println("/main");
+		
+		
+		return "main/index";
 	}
 }
