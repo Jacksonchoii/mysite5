@@ -12,7 +12,7 @@ public class UserDao {
 	@Autowired
 	private SqlSession sqlSession;
 	
-	//회원가입--> DB입장에서 회원정보저장 이니까 insert
+	//회원가입--> DB입장에서 회원정보저장 이니까 insert / 하나의 DAO는 한 가지 기능만 할 것(쿼리문하나)
 	public int insert(UserVo userVo) {
 		System.out.println("user dao : insert 확인");
 		System.out.println(userVo.toString());
@@ -43,10 +43,10 @@ public class UserDao {
 	}
 	
 	//회원정보 수정
-	public void update(UserVo userVo) { //int로 count 리턴이 굳이 필요한가?.. 없어보임 일단 void로
+	public int update(UserVo userVo) { //int로 count 리턴이 굳이 필요한가?.. 없어보임 일단 void로 다시 int로
 		System.out.println("user dao : update 확인");
 		System.out.println(userVo);
 		
-		sqlSession.update("user.update", userVo);
+		return sqlSession.update("user.update", userVo);
 	}
 }

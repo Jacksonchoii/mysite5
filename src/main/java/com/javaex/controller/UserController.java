@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.javaex.dao.UserDao;
+import com.javaex.service.UserService;
 import com.javaex.vo.UserVo;
 
 @Controller
@@ -17,16 +18,15 @@ import com.javaex.vo.UserVo;
 public class UserController {
 	
 	//*필드
-	@Autowired //자동으로 올려서 메모리에 넣어주는 기능
-	private UserDao userDao;
 	
-	
+	@Autowired
+	private UserService userService;
 	
 	//*생성자
 	//*메소드 g/s
 	
 	
-	//*일반 메소드
+	//*일반 메소드 / 컨트롤러는 기술이 달라질 수 있음 -> 분리시키면 기술이 달라도 독립적으로 받을 수 있음
 	
 	//회원가입 폼
 	@RequestMapping(value = "/joinForm" , method = {RequestMethod.GET, RequestMethod.POST})
@@ -42,8 +42,7 @@ public class UserController {
 		System.out.println("/user/join");
 		System.out.println(userVo.toString());
 		
-		int count = userDao.insert(userVo);
-		System.out.println("userController count" + count);
+		int count = userService.join(userVo);
 		
 		return "user/joinOk";
 	}
@@ -62,8 +61,7 @@ public class UserController {
 		System.out.println("/user/login");
 		System.out.println(userVo.toString());
 		
-		UserVo authUser = userDao.selectUser(userVo);
-		//System.out.println("controller-->" + authUser.toString()); 확인용
+		UserVo authUser = userService.login(userVo);
 		
 		if(authUser == null) {//로그인 실패했을 때
 			
@@ -94,17 +92,26 @@ public class UserController {
 	public String modifyForm(HttpSession session, Model model) {
 		System.out.println("/user/modifyForm");
 		
+		/*혼자 했을 때 세션값을 authUser에 담고 진행
+		 
 		//세션 authUser 가져오기
 		UserVo authUser = (UserVo)session.getAttribute("authUser");
 		System.out.println(authUser); //값 확인
-		
-		//세션 authUser의 no값 가져오기 --> 회원정보 가져오기 위해서
+		//세션의 authUser에서 no값 가져오기
 		int no = authUser.getNo();
 		
-		UserVo userVo = userDao.selectOne(no);
-		//System.out.println("controller-->" + userVo.toString());
+		같은 코드지만 아래 코드는 한 번에 no값 가져온 것 - 쌤 코드 */
 		
-		//회원정보 userVo를 model로 전송해주기
+		//세션의 no값 가져오기 --> 회원정보 가져오기 위해서
+		int no = ((UserVo)session.getAttribute("authUser")).getNo();
+		
+		//세션값이 없으면 --> 로그인 폼
+		
+		
+		//회원정보 가져오기
+		UserVo userVo = userService.modifyForm(no);
+		
+		//회원정보 userVo를 model로 전송해주기 --> jsp에 데이터 전송
 		model.addAttribute("userVo", userVo);
 		
 		return "/user/modifyForm";
@@ -112,7 +119,7 @@ public class UserController {
 	
 	//회원정보 수정  http://localhost:8088/mysite5/user/modify?password=5678&name=김태현&gender=male
 	@RequestMapping(value = "/modify" , method = {RequestMethod.GET, RequestMethod.POST})
-	public String modify(@ModelAttribute UserVo userVo, HttpSession session) {
+	public String modify(@ModelAttribute UserVo userVo, HttpSession session) { //session은 브라우저에 한정된 기술이라 controller(프레젠테이션 계층에서 처리하는게 좋음)
 		System.out.println("/user/modify");
 		
 		System.out.println("회원정보 수정 값 확인" + userVo.toString());
@@ -124,8 +131,16 @@ public class UserController {
 		userVo.setNo(authUser.getNo()); //그림 그려보면 이해 바로 됨
 		System.out.println("no받은 회원정보 수정 값 확인" + userVo.toString());
 		
+		/* 같은 코드
+		 // 세션에서 no값 가져오기
+		 int no = authUser.getNo();
+		 // no값 넣기
+		 userVo.setNo(no);
+		 */
+		
+		
 		//회원정보 수정
-		userDao.update(userVo);
+		int count = userService.modify(userVo);
 		
 		//수정되고 난 후 이름 바뀌면 메인페이지 이름도 바뀐 값으로
 		authUser.setName(userVo.getName());

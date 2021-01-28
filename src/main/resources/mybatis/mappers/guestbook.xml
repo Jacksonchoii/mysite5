@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="guestbook">
+	
+	<!-- 쿼리문작성 -->
+	<!-- GuestVo Map -->
+	<resultMap id="resultMapGuestVo" type="com.javaex.vo.GuestbookVo">
+		<result column="no" property="no" />
+		<result column="name" property="name" />
+		<result column="password" property="password" />
+		<result column="content" property="content" />
+		<result column="reg_date" property="regDate" />
+	</resultMap>
+	
+	<!-- 전체리스트 resultMap -->
+	<select id="selectList" resultMap="resultMapGuestVo">
+		<![CDATA[
+			select	no,
+					name,
+					password,
+					content,
+					to_char(reg_date, 'yyyy-mm-dd hh24:mi:ss') reg_date
+			from guestbook
+		]]>
+	</select>
+	
+	<!-- 방명록 등록 -->
+	<insert id="insert" parameterType="com.javaex.vo.GuestbookVo">
+		<![CDATA[
+			insert into guestbook
+			values (seq_no.nextval,
+							#{name},
+							#{password},
+							#{content},
+							sysdate)
+		]]>
+	</insert>
+	
+	<!-- 방명록 삭제 -->
+	<delete id="delete" parameterType="com.javaex.vo.GuestbookVo">
+		<![CDATA[
+			delete from guestbook
+			where no = #{no}
+			and password = #{password}
+		]]>
+	</delete>
+
+</mapper>
