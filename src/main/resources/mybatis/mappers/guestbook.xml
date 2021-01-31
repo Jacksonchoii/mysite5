@@ -5,8 +5,8 @@
 <mapper namespace="guestbook">
 	
 	<!-- 쿼리문작성 -->
-	<!-- GuestVo Map -->
-	<resultMap id="resultMapGuestVo" type="com.javaex.vo.GuestbookVo">
+	<!-- GuestbookVo Map -->
+	<resultMap id="resultMapGuestbookVo" type="com.javaex.vo.GuestbookVo">
 		<result column="no" property="no" />
 		<result column="name" property="name" />
 		<result column="password" property="password" />
@@ -15,7 +15,7 @@
 	</resultMap>
 	
 	<!-- 전체리스트 resultMap -->
-	<select id="selectList" resultMap="resultMapGuestVo">
+	<select id="selectList" resultMap="resultMapGuestbookVo">
 		<![CDATA[
 			select	no,
 					name,

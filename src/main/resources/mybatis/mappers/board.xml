@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="board">
+	
+	
+	<!-- 게시판 리스트 -->
+	<select id="selectList" resultType="com.javaex.vo.BoardVo">
+		<![CDATA[
+			select  b.no,
+        			title,
+        			name,
+        			content,
+        			hit,
+        			to_char(reg_date, 'YYYY-MM-DD hh24:mi:ss') regDate,
+        			user_no userNo
+			from board b, users u
+			where b.user_no = u.no
+		]]>
+	</select>
+	
+	<!-- 게시판 글쓰기 -->
+	<insert id="insert" parameterType="com.javaex.vo.BoardVo">
+		<![CDATA[
+			insert into board 
+			values(seq_board_no.nextval,
+       							#{title}, 
+       							#{content}, 
+       							default, 
+       							sysdate, 
+       							#{userNo}
+       			  )
+		]]>
+	</insert>
+
+	<!-- 조회수 증가 -->
+	<update id="updateHit" parameterType="int">
+		<![CDATA[
+			update board
+			set hit = hit+1
+			where no = #{no}
+		]]>		
+	</update>
+
+	<!-- 게시글 보기 -->
+	<select id="selectOneRead" parameterType="int" resultType="com.javaex.vo.BoardVo">
+		<![CDATA[
+			select  name,
+	        		hit,
+	        		to_char(reg_date, 'YYYY-MM-DD hh24:mi:ss') regDate,
+	        		title,
+	        		content,
+	        		user_no userNo,
+	        		b.no
+			from board b, users u
+			where b.user_no = u.no
+			and b.no = #{no}
+		]]>		
+	</select>
+
+	<!-- 게시글 수정 -->
+	<update id="update" parameterType="com.javaex.vo.BoardVo">
+		<![CDATA[
+			update board
+			set title = #{title},
+    			content = #{content}
+			where no = #{no}
+		]]>	
+	</update>
+	
+	<!-- 게시글 삭제 -->
+	<delete id="delete" parameterType="int">
+		<![CDATA[
+			delete from board
+			where no = #{no}
+		]]>	
+	</delete>
+
+</mapper>
