@@ -105,5 +105,6 @@ public class BoardController {
 		boardService.erase(no);
 		
 		return "redirect:/board/list";
-	}
+	}	
+	
 }

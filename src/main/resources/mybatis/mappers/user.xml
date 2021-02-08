@@ -52,5 +52,18 @@
 		]]>				
 	</update>
 	
+	<!-- 회원정보 가져오기 회원가입 id체크 -->
+	<select id="selectById" parameterType="string" resultType="com.javaex.vo.UserVo">
+		<![CDATA[
+			select  no,
+					id,
+					password,
+        			name,
+        			gender
+			from users
+			where id = #{id}				
+		]]>		
+	</select>
+	
 
 </mapper>

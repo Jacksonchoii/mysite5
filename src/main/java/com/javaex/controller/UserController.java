@@ -8,6 +8,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.javaex.dao.UserDao;
 import com.javaex.service.UserService;
@@ -147,5 +149,23 @@ public class UserController {
 		
 		return "redirect:/";
 	}
+	
+	//회원가입 - 아이디 체크
+	@ResponseBody //return을 순수한 데이터로 보고 응답(response)의 body영역에 보낸다(데이터만 보낸다) 
+	@RequestMapping(value = "/idcheck" , method = {RequestMethod.GET, RequestMethod.POST})
+	public String idcheck(@RequestParam("id") String id) { //많으면 @ModelAttribute
+		//패스워드는 테스트용으로 코드 추가한 것 @RequestParam("password") String password
+		
+		System.out.println("/user/idcheck");
+		System.out.println("checkid = " + id);
+		//System.out.println("password = " + password);
+		
+		String result = userService.idcheck(id);
+		
+		System.out.println(result);
+		
+		return result; //원래는 "result" == /WEB-INF/views/result.jsp (jsp찾는 문법) but 데이터만 보내려고 한다.
+	}
+	
 	
 }
