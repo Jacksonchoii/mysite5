@@ -42,9 +42,26 @@ public class GuestbookDao {
 		return count;
 	}
 
+	// selectKey 글저장
+	public void insertSelectKey(GuestbookVo guestbookVo) {
+		
+		System.out.println("dao : insertSelectKey()");
+		System.out.println("dao : 실행전" + guestbookVo); // name , password, content 3개
+		
+		sqlSession.insert("guestbook.insertSelectKey", guestbookVo);
+		System.out.println("실행 후" + guestbookVo); // no, name, password, content 4개
+		
+		//return guestbookVo.getNo(); 같은 번호이기 때문에 굳이 받을 필요 없다. 
+	}
 	
-	
-	
+	// 글 1개 가져오기
+	public GuestbookVo selectOne(int no) {
+		
+		System.out.println("dao : selectOne()");
+		
+		return sqlSession.selectOne("guestbook.select", no);
+		
+	}
 	
 	
 
