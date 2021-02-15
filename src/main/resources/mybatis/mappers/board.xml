@@ -20,6 +20,80 @@
 		]]>
 	</select>
 	
+	<!-- 게시판 리스트(검색) -->
+	<select id="selectList2" parameterType="string" resultType="com.javaex.vo.BoardVo">
+		<![CDATA[
+			select  b.no,
+        			title,
+        			name,
+        			content,
+        			hit,
+        			to_char(reg_date, 'YYYY-MM-DD hh24:mi:ss') regDate,
+        			user_no userNo			
+			from board b, users u
+			where b.user_no = u.no
+		]]>	
+			<if test="value != null and value !='' ">			
+				and title like '%'||#{keyword}||'%'
+			</if>
+		
+	</select>
+	
+	
+	<!-- 게시판 리스트(검색) -->
+	<select id="selectList3" parameterType="map" resultType="com.javaex.vo.BoardVo">
+		<![CDATA[
+			select  r.rnum,
+		        	r.no,
+		        	r.title,
+		        	r.name,
+		        	r.content,
+		        	r.hit,
+		        	r.regDate,
+		        	r.userNo
+			from (select  rownum rnum,
+		              	  o.no,
+			              o.title,
+			              o.name,
+			              o.content,
+			              o.hit,
+			              o.regDate,
+			              o.userNo
+		      	  from (select    b.no,
+		                          title,
+		                          name,
+		                          content,
+		                          hit,
+		                          to_char(reg_date, 'YYYY-MM-DD hh24:mi:ss') regDate,
+		                          user_no userNo
+		                from board b, users u
+		                where b.user_no = u.no
+		 ]]>
+		         	  <if test=" value != null and value != '' ">
+		         	  	and title like '%'||#{keyword}||'%'
+		         	  </if>      
+		<![CDATA[		              
+		                order by b.no desc) o ) r
+			where r.rnum >= #{startRNum}
+			and r.rnum <= #{endRNum}
+		]]>			
+	</select>
+	
+	<!-- 전체 글 갯수 구하기 -->
+	<select id="selectTotalCnt" parameterType="string" resultType="int">
+		<![CDATA[
+			select count(*)
+			from board b, users u
+			where b.user_no = u.no
+		]]>
+	   	  	<if test=" value != null and value != '' ">
+		    	and title like '%'||#{keyword}||'%'
+		  	</if>		
+	</select>
+	
+	
+	
+	
 	<!-- 게시판 글쓰기 -->
 	<insert id="insert" parameterType="com.javaex.vo.BoardVo">
 		<![CDATA[

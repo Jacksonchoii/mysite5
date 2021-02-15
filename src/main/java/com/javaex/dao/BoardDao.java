@@ -1,6 +1,8 @@
 package com.javaex.dao;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,43 @@ public class BoardDao {
 		
 		return sqlsession.selectList("board.selectList");	
 	}
+	
+	//리스트(리스트+검색) - 글 전체가져오기(키워드)
+	public List<BoardVo> selectList2(String keyword){
+		System.out.println("dao : selectList2()");
+		System.out.println("keyword = " + keyword);
+		
+		
+		return sqlsession.selectList("board.selectList2", keyword);
+		
+	}
+	
+	//리스트(리스트+검색+페이징) - 글 전체가져오기(키워드+페이징)
+		public List<BoardVo> selectList3(String keyword, int startRNum, int endRNum){
+			System.out.println("dao : selectList3()");
+			
+			//map으로 묶는게 낫다 --> 다른 곳에선 안 쓸 것 같아서
+			Map<String, Object> map = new HashMap<String, Object>(); //Map만 생성
+			
+			map.put("keyword", keyword);
+			map.put("startRNum", startRNum);
+			map.put("endRNum", endRNum);
+			
+			System.out.println("map=" + map);
+			
+			return sqlsession.selectList("board.selectList3", map);
+				
+	}
+	
+	// 전체 글 갯수 구하기
+	public int selectTotalCnt(String keyword) {
+		System.out.println("dao : selectTotalCount");
+		
+		return sqlsession.selectOne("board.selectTotalCnt", keyword);
+		
+	}
+		
+		
 	
 	//게시판 글쓰기
 	public int boardInsert(BoardVo boardVo) {
